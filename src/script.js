@@ -199,7 +199,7 @@ const displayController = (() => {
             } else {
                 result.innerHTML = "You Lose!";
             }
-        }, 200);
+        }, 300);
         
     }
 
