@@ -67,9 +67,9 @@ header > p {
     grid-template-columns: 1fr 1fr 1fr;
 }
 .field {
+    border: 4px solid var(--gray);
     aspect-ratio: 1;
     cursor: pointer;
-    border: 1px solid var(--light-gray);
     font-size: 120px;
     display: flex;
     align-items: center;
@@ -123,3 +123,16 @@ footer > p {
     color: var(--gray);
 }
 
+/* grid style */
+.field0, .field3, .field6 {
+    border-left: 4px solid transparent !important;
+}
+.field0, .field1, .field2 {
+    border-top: 4px solid transparent !important;
+}
+.field2, .field5, .field8 {
+    border-right: 4px solid transparent !important;
+}
+.field6, .field7, .field8 {
+    border-bottom: 4px solid transparent !important;
+}

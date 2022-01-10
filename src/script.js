@@ -207,7 +207,7 @@ const displayController = (() => {
     const initiate = () => {
         gameWindow.style.display = "flex";
         resultWindow.style.display = "none";
-        fields.forEach(field => field.className = "field");
+        fields.forEach((field, index) => field.className = `field field${index}`);
         gameBoard.reset();
         gameController.reset();
         updateGameboard();
