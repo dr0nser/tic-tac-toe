@@ -61,7 +61,7 @@ header > p {
     color: var(--red);
 }
 .grid {
-    width: 27vw;
+    width: 500px;
     aspect-ratio: 1;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -135,4 +135,80 @@ footer > p {
 }
 .field6, .field7, .field8 {
     border-bottom: 4px solid transparent !important;
+}
+
+/* responsive design */
+@media screen and (max-width: 1200px) {
+    header > p {
+        padding-top: 40px;
+        font-size: 100px;
+    }
+    .player {
+        display: none;
+    }
+    .grid {
+        padding: 20px;
+    }
+    .field {
+        border: 3px solid var(--gray);
+        aspect-ratio: 1;
+        cursor: pointer;
+        font-size: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+    .field0, .field3, .field6 {
+        border-left: 3px solid transparent !important;
+    }
+    .field0, .field1, .field2 {
+        border-top: 3px solid transparent !important;
+    }
+    .field2, .field5, .field8 {
+        border-right: 3px solid transparent !important;
+    }
+    .field6, .field7, .field8 {
+        border-bottom: 3px solid transparent !important;
+    }
+    .result {
+        font-size: 70px;
+        color: var(--blue);
+    }
+}
+@media screen and (max-width: 800px) {
+    header > p {
+        padding-top: 40px;
+        font-size: 60px;
+    }
+    .player {
+        display: none;
+    }
+    .grid {
+        padding: 20px;
+    }
+    .field {
+        border: 2px solid var(--gray);
+        aspect-ratio: 1;
+        cursor: pointer;
+        font-size: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+    .field0, .field3, .field6 {
+        border-left: 2px solid transparent !important;
+    }
+    .field0, .field1, .field2 {
+        border-top: 2px solid transparent !important;
+    }
+    .field2, .field5, .field8 {
+        border-right: 2px solid transparent !important;
+    }
+    .field6, .field7, .field8 {
+        border-bottom: 2px solid transparent !important;
+    }
+    .result {
+        font-size: 70px;
+        color: var(--blue);
+    }
 }
