@@ -1,6 +1,8 @@
 ![Tic Tac Toe logo](./images/ttt-logo.png "Tic Tac Toe logo")
 
-This is a Tic Tac Toe game. It is a 1v1 match with the computer. See if you can win ;)
+This is a Tic-Tac-Toe game between you and the AI. AI plays the game using the **Minimax Algorithm**.
+
+Play 1v1 with the AI and see if you win!
 
 Live link: [Play Tic Tac Toe](https://whyucode.github.io/tic-tac-toe/)
 

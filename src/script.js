@@ -1,59 +1,117 @@
 const gameBoard = (() => {
     let board = ["", "", "", "", "", "", "", "", ""];
+
     const reset = () => {
         for (let i = 0; i < 9; i++) {
             board[i] = "";
         }
     }
+
+    const getBoard = () => {
+        return board;
+    }
+
     const getField = (index) => {
         return board[index];
     }
+
     const setField = (index, sign) => {
         board[index] = sign;
     }
-    return { setField, getField, reset }; 
+
+    return { setField, getBoard, getField, reset }; 
+
 })();
 
 const gameController = (() => {
-    let currentPlayer = 'X';
+
     let round = 1;
 
+    const lookup = {
+        O: 1, // ai
+        X: -1, // player
+        draw: 0 // draw game
+    }
+
     const playRound = (index) => {
-        gameBoard.setField(index, currentPlayer);
-        if (checkWinner(index)) {
-            displayController.showResult(currentPlayer);
+        gameBoard.setField(index, 'X'); // player turn
+        if (getWinner(gameBoard.getBoard()) !== null) {
+            displayController.showResult(getWinner(gameBoard.getBoard()));
             return;
         }
-        if (round === 9) {
-            displayController.showResult("draw");
-            return;
-        }
-        round++;
-        currentPlayer = 'O';
+        ++round;
         if (round < 9) {
-            let emptyFields = '';
-            for (let i = 0; i < 9; i++) {
-                if (gameBoard.getField(i) == '') {
-                    emptyFields += i;
-                }
-            }
-            let randomIndex = parseInt(emptyFields[Math.floor(Math.random() * emptyFields.length)]);
-            gameBoard.setField(randomIndex, currentPlayer);
-            if (checkWinner(randomIndex)) {
-                displayController.showResult(currentPlayer);
+            playAI(); // AI's turn
+            if (getWinner(gameBoard.getBoard()) !== null) {
+                displayController.showResult(getWinner(gameBoard.getBoard()));
                 return;
             }
-            if (round === 9) {
-                displayController.showResult("draw");
-                return;
-            }
-            round++;
-            currentPlayer = 'X';
-        } else {
-            displayController.showResult("draw");
+            ++round;
         }
     }
-    const checkWinner = (fieldIndex) => {
+
+    const playAI = () => {
+        let tttBoard = gameBoard.getBoard();
+        let bestScore = -Infinity, bestIndex;
+
+        for (let i = 0; i < 9; i++) {
+            if (tttBoard[i] === '') {
+                tttBoard[i] = 'O'; // make a move
+                let score = minimax(tttBoard, false);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestIndex = i;
+                }
+                tttBoard[i] = ''; // backtrack move
+            }
+        }
+        gameBoard.setField(bestIndex, 'O');
+    }
+
+    const calculateScore = (board) => {
+        let emptyFields = 1;
+        for (let i = 0; i < 9; i++) {
+            if (board[i] === '') {
+                emptyFields++;
+            }
+        }
+        return emptyFields;
+    }
+
+
+    function minimax(board, isMaximizing) {
+        let winner = getWinner(board);
+        if (winner !== null) {
+            return calculateScore(board) * lookup[winner];
+        }
+        if (isMaximizing) {
+            let bestScore = -Infinity;
+            for (let i = 0; i < 9; i++) {
+                if (board[i] == "") {
+                    board[i] = 'O'; // make move
+                    let score = minimax(board, false);
+                    board[i] = ''; // backtrack
+                    bestScore = Math.max(score, bestScore);
+                }
+            }
+            
+            return bestScore;
+        }
+        else {
+            let bestScore = Infinity;
+            for (let i = 0; i < 9; i++) {
+                if (board[i] == "") {
+                    board[i] = 'X'; // make a move
+                    let score = minimax(board, true);
+                    board[i] = ''; // backtrack
+                    bestScore = Math.min(score, bestScore);
+                }
+            }
+            return bestScore;
+        }
+    }
+
+    const getWinner = (board) => {
         const winCombinations = [
             // horizontal
             [0, 1, 2],
@@ -67,19 +125,35 @@ const gameController = (() => {
             [0, 4, 8],
             [2, 4, 6],
         ];
-        return winCombinations
-        .filter((combination) => combination.includes(fieldIndex))
-        .some((possibleCombination) =>
-            possibleCombination.every(
-            (index) => gameBoard.getField(index) === currentPlayer
-            )
-        );
+
+        // check if x won
+        let x_win = winCombinations.some(possibleCombination => possibleCombination.every(index => board[index] === 'X'));
+        if (x_win === true) {
+            return 'X';
+        }
+
+        // check if o won
+        let o_win = winCombinations.some(possibleCombination => possibleCombination.every(index => board[index] === 'O'));
+        if (o_win === true) {
+            return 'O';
+        }
+
+        // nobody won and there is still place for further moves
+        for (let i = 0;i < 9; i++) {
+            if (board[i] === '') {
+                return null;
+            }
+        }
+
+        // match is drawn
+        return 'draw';
     } 
+
     const reset = () => {
         round = 1;
-        currentPlayer = 'X';
     }
     return { playRound, reset };
+
 })();
 
 const displayController = (() => {
@@ -99,9 +173,11 @@ const displayController = (() => {
             }
         }
     }
+
     replay.addEventListener("click", () => {
         initiate();
     })
+
     fields.forEach(field => field.addEventListener("click", (e) => {
         if (e.target.innerHTML != '') {
             return;
@@ -109,6 +185,8 @@ const displayController = (() => {
         gameController.playRound(parseInt(e.target.id));
         updateGameboard();
     }))
+
+    // display result
     const showResult = (res) => {
         setTimeout(function() {
             gameWindow.style.display = "none";
@@ -124,6 +202,8 @@ const displayController = (() => {
         }, 200);
         
     }
+
+    // reset the game
     const initiate = () => {
         gameWindow.style.display = "flex";
         resultWindow.style.display = "none";
@@ -132,7 +212,9 @@ const displayController = (() => {
         gameController.reset();
         updateGameboard();
     }
+
     return { showResult, initiate };
+
 })();
 
 // start
